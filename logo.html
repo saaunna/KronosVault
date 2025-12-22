@@ -1,0 +1,40 @@
+<html>
+<head>
+    <title>KronosVault Logo</title>
+</head>
+<body>
+    <canvas id="logoCanvas" width="400" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById("logoCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        ctx.moveTo(100, 50);
+        ctx.lineTo(300, 50);
+        ctx.quadraticCurveTo(350, 50, 350, 100);
+        ctx.lineTo(350, 300);
+        ctx.quadraticCurveTo(350, 350, 300, 350);
+        ctx.lineTo(100, 350);
+        ctx.quadraticCurveTo(50, 350, 50, 300);
+        ctx.lineTo(50, 100);
+        ctx.quadraticCurveTo(50, 50, 100, 50);
+        ctx.fill();
+        ctx.strokeStyle = "purple";
+        ctx.lineWidth = 7
+        ctx.beginPath();
+        ctx.moveTo(150, 100);
+        ctx.lineTo(250, 100);
+        ctx.lineTo(200, 200);
+        ctx.lineTo(250, 300);
+        ctx.lineTo(150, 300);
+        ctx.lineTo(200, 200);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(270, 120);
+        ctx.lineTo(220, 200);
+        ctx.lineTo(270, 280);
+        ctx.stroke();
+    </script>
+</body>
+</html>

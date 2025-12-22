@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Our Plans | KronosVault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            padding: 40px;
+            font-family: "Times New Roman", Times, serif;
+            color: rgb(222, 213, 201);
+        }
+
+        #glowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body:hover #glowCanvas {
+            opacity: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00ffcc, #0088ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Trebuchet MS', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .header p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-family: "Apple Chancery", "Monotype Corsiva", "Brush Script MT", cursive;
+        }
+
+        .plan-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .plan-box {
+            background-color: rgba(30, 30, 30, 0.8);
+            border-radius: 20px;
+            width: 320px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .plan-box:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 255, 255, 0.4);
+        }
+
+        .plan-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: aquamarine;
+        }
+
+        .plan-title {
+            font-size: 32px;
+            color: aquamarine;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .plan-price {
+            font-size: 36px;
+            margin: 20px 0;
+            color: #fff;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        .plan-price span {
+            font-size: 16px;
+            color: #aaa;
+        }
+
+        .plan-features {
+            font-size: 18px;
+            line-height: 2;
+            margin-bottom: 30px;
+        }
+
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .plan-features li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .plan-features li i {
+            position: absolute;
+            left: 0;
+            color: aquamarine;
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(45deg, #00ffcc, #0088ff);
+            color: #000;
+            padding: 5px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom-left-radius: 15px;
+            transform: rotate(0deg);
+        }
+
+        .plan-button {
+            background: linear-gradient(45deg, #00ffcc, #0088ff);
+            border: none;
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .plan-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .free-plan .plan-icon {
+            color: #7fdbff;
+        }
+
+        .super-plan {
+            border: 1px solid rgba(0, 255, 255, 0.4);
+        }
+
+        .super-plan .plan-icon {
+            color: #2eccff;
+        }
+
+        .premium-plan {
+            border: 1px solid rgba(0, 200, 255, 0.6);
+        }
+
+        .premium-plan .plan-icon {
+            color: #00d9ff;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 48px;
+            }
+            
+            .plan-box {
+                width: 90%;
+            }
+        }
+        
+        /* Animated icon styles */
+        .animated-icon {
+            position: relative;
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            margin-bottom: 20px;
+            color: aquamarine;
+        }
+        
+        .animated-icon i {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .plan-box:hover .animated-icon i {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px aquamarine);
+        }
+        .back-home {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(45deg, #00ffcc, #0088ff);
+        color: #000;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .back-home:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 255, 255, 0.6);
+    }
+    .back-home i {
+        font-size: 14px;
+    }
+    </style>
+</head>
+<body>
+    <canvas id="glowCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("glowCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // Background subtle animations
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.speedX = (Math.random() - 0.5) * 0.05;
+                this.speedY = (Math.random() - 0.5) * 0.05;
+                this.pulseSpeed = Math.random() * 0.01 + 0.005;
+                this.pulseDirection = Math.random() > 0.5 ? 1 : -1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                this.opacity += this.pulseSpeed * this.pulseDirection;
+                
+                if (this.opacity > 0.8 || this.opacity < 0.3) {
+                    this.pulseDirection *= -1;
+                }
+                
+                // Wrap around screen edges
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(0, 255, 255, ${this.opacity})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = "rgba(0, 255, 255, 0.5)";
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Create subtle nebula clouds
+        class Nebula {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 200 + 100;
+                this.opacity = Math.random() * 0.05 + 0.02;
+                this.hue = Math.random() * 60 + 180; // Blue-cyan range
+                this.speedX = (Math.random() - 0.5) * 0.2;
+                this.speedY = (Math.random() - 0.5) * 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Wrap around screen edges
+                if (this.x < -this.size) this.x = canvas.width + this.size;
+                if (this.x > canvas.width + this.size) this.x = -this.size;
+                if (this.y < -this.size) this.y = canvas.height + this.size;
+                if (this.y > canvas.height + this.size) this.y = -this.size;
+            }
+
+            draw() {
+                const gradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.size
+                );
+                gradient.addColorStop(0, `hsla(${this.hue}, 100%, 70%, ${this.opacity})`);
+                gradient.addColorStop(1, `hsla(${this.hue}, 100%, 50%, 0)`);
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Create stars and nebulae
+        const stars = [];
+        const nebulae = [];
+        
+        for (let i = 0; i < 150; i++) {
+            stars.push(new Star());
+        }
+        
+        for (let i = 0; i < 8; i++) {
+            nebulae.push(new Nebula());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw nebulae first (background)
+            nebulae.forEach(nebula => {
+                nebula.update();
+                nebula.draw();
+            });
+            
+            // Draw stars (foreground)
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+
+    <div class="header">
+        <h1>TIME CAPSULE PLANS</h1>
+        <p>Preserve your memories with our secure time capsule service. Select the perfect plan that matches your needs and budget, and send messages to your future self with ease.</p>
+    </div>
+
+    <div class="plan-container">
+        <div class="plan-box free-plan">
+            <div class="animated-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="plan-title">BASIC</div>
+            <div class="plan-price">₹0<span>/month</span></div>
+            <div class="plan-features">
+                <ul>
+                    <li><i class="fas fa-check"></i> 2 capsules per year</li>
+                    <li><i class="fas fa-check"></i> Text & Images only</li>
+                    <li><i class="fas fa-check"></i> Max lock duration: 1 year</li>
+                    <li><i class="fas fa-check"></i> Basic Email Reminders</li>
+                    <li><i class="fas fa-check"></i> 100MB storage</li>
+                </ul>
+            </div>
+            <a href="#" class="plan-button">Get Started</a>
+        </div>
+        
+        <div class="plan-box super-plan">
+            <div class="recommended-badge">POPULAR</div>
+            <div class="animated-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="plan-title">STANDARD</div>
+            <div class="plan-price">₹399<span>/month</span></div>
+            <div class="plan-features">
+                <ul>
+                    <li><i class="fas fa-check"></i> 10 capsules per year</li>
+                    <li><i class="fas fa-check"></i> Text, Images, Videos, Audio</li>
+                    <li><i class="fas fa-check"></i> Max lock duration: 5 years</li>
+                    <li><i class="fas fa-check"></i> Email + SMS Reminders</li>
+                    <li><i class="fas fa-check"></i> 5GB storage</li>
+                    <li><i class="fas fa-check"></i> Priority Support</li>
+                </ul>
+            </div>
+            <a href="Payment.html" class="plan-button">Choose Plan</a>
+        </div>
+        
+        <div class="plan-box premium-plan">
+            <div class="animated-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="plan-title">PREMIUM</div>
+            <div class="plan-price">₹799<span>/month</span></div>
+            <div class="plan-features">
+                <ul>
+                    <li><i class="fas fa-check"></i> Unlimited capsules</li>
+                    <li><i class="fas fa-check"></i> All media types supported</li>
+                    <li><i class="fas fa-check"></i> Max lock duration: 10 years</li>
+                    <li><i class="fas fa-check"></i> Email, SMS & Push Reminders</li>
+                    <li><i class="fas fa-check"></i> 50GB storage</li>
+                    <li><i class="fas fa-check"></i> Playlist with YouTube Music</li>
+                    <li><i class="fas fa-check"></i> 24/7 VIP Support</li>
+                </ul>
+            </div>
+            <a href="PremiumPayment.html" class="plan-button">Go Premium</a>
+        </div>
+    </div>
+    <a href="landingpage.html" class="back-home">
+        <i class="fas fa-home"></i> Back to Home
+    </a>
+</body>
+</html>

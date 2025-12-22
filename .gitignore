@@ -1,0 +1,7 @@
+.vscode/
+OpenJDK-*/
+*.dll
+*.class
+bin/
+out/
+About KronosVault.html

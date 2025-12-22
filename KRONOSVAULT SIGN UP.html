@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KronosVault | Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-light: #8b5cf6;
+            --dark-bg: #0f0f15;
+            --card-bg: #1a1a25;
+            --text: #e2e8f0;
+            --text-light: #a0aec0;
+            --error: #f56565;
+            --warning: #ed8936;
+            --success: #48bb78;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--dark-bg);
+            color: var(--text);
+            overflow-y: auto; /* Changed from hidden to auto for scrolling */
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .signup-container {
+            position: relative;
+            z-index: 2;
+            width: 420px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 40px 0; /* Added margin for better scrolling */
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .logo p {
+            color: var(--text-light);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            font-size: 15px;
+            width: 100%;
+        }
+
+        button:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .preview-container {
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+
+        .preview-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            object-fit: cover;
+        }
+
+        /* Password strength indicator styles */
+        .password-strength {
+            margin-top: 8px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .strength-meter {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .strength-meter-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .strength-text {
+            margin-top: 4px;
+        }
+
+        .requirements {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+
+        input[type="file"]::before {
+            content: 'Choose file';
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 6px 12px;
+            outline: none;
+            white-space: nowrap;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        input[type="file"]:hover::before {
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="signup-container">
+        <div class="logo">
+            <h1>SIGN UP</h1>
+            <p>"Start preserving your memories today"</p>
+        </div>
+        
+        <form id="signupForm">
+            <div class="input-group">
+                <label for="full-name">Full Name</label>
+                <input type="text" id="full-name" placeholder="Enter your name" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Create a password (min 7 characters)" required>
+                <div class="password-strength" id="password-strength">
+                    <div class="strength-meter">
+                        <div class="strength-meter-fill" id="strength-meter-fill"></div>
+                    </div>
+                    <div class="strength-text" id="strength-text"></div>
+                </div>
+                <div class="requirements">
+                    Password must be at least 7 characters long
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" placeholder="Re-enter your password" required>
+                <div class="error-message" id="password-error">Passwords don't match</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="profile-pic">Profile Picture</label>
+                <input type="file" id="profile-pic" accept="image/*">
+                <div class="preview-container" id="preview-container">
+                    <img id="preview-image" class="preview-image">
+                </div>
+            </div>
+            
+            <button type="submit">Create Account</button>
+        </form>
+        
+        <div class="footer-links">
+            <a href="KRONOSVAULT LOGIN.html">Already have an account? Sign in</a>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced but subtle particle animation
+        const canvas = document.getElementById("particleCanvas");
+        const ctx = canvas.getContext("2d");
+        let particles = [];
+        const particleCount = 80;
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+        
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speed: Math.random() * 0.5 + 0.2,
+                    opacity: Math.random() * 0.4 + 0.3,
+                    angle: Math.random() * Math.PI * 2,
+                    sway: Math.random() * 0.3 - 0.15
+                });
+            }
+        }
+        
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 120) {
+                        ctx.strokeStyle = `rgba(139, 92, 246, ${0.3 - distance/400})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                p.y += p.speed;
+                p.x += Math.sin(p.angle) * p.sway;
+                p.angle += 0.01;
+                
+                if (p.y > canvas.height) p.y = 0;
+                if (p.x < 0 || p.x > canvas.width) p.x = Math.random() * canvas.width;
+                
+                ctx.fillStyle = `rgba(139, 92, 246, ${p.opacity})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            drawConnections();
+            requestAnimationFrame(animate);
+        }
+        
+        // Profile picture preview
+        document.getElementById('profile-pic').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('preview-image');
+                    preview.src = event.target.result;
+                    document.getElementById('preview-container').style.display = 'block';
+                    
+                    // Scroll to bottom after image loads
+                    setTimeout(() => {
+                        window.scrollTo({
+                            top: document.body.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                    }, 100);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthElement = document.getElementById('password-strength');
+            const meterFill = document.getElementById('strength-meter-fill');
+            const strengthText = document.getElementById('strength-text');
+            
+            if (password.length === 0) {
+                strengthElement.style.display = 'none';
+                return;
+            }
+            
+            strengthElement.style.display = 'block';
+            
+            // Check password strength
+            let strength = 0;
+            
+            // Length check (minimum 7 characters)
+            if (password.length >= 7) strength += 1;
+            
+            // Contains both lower and uppercase
+            if (/[a-z]/.test(password)) strength += 0.5;
+            if (/[A-Z]/.test(password)) strength += 0.5;
+            
+            // Contains numbers
+            if (/\d/.test(password)) strength += 1;
+            
+            // Contains special characters
+            if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
+            
+            // Update meter and text
+            let strengthPercentage = 0;
+            let strengthLabel = '';
+            let strengthColor = '';
+            
+            if (password.length < 7) {
+                strengthPercentage = 20;
+                strengthLabel = 'Not Recommended (too short)';
+                strengthColor = 'var(--error)';
+            } else if (strength < 2) {
+                strengthPercentage = 30;
+                strengthLabel = 'Not Recommended';
+                strengthColor = 'var(--error)';
+            } else if (strength < 3) {
+                strengthPercentage = 60;
+                strengthLabel = 'Moderate';
+                strengthColor = 'var(--warning)';
+            } else {
+                strengthPercentage = 100;
+                strengthLabel = 'Strong';
+                strengthColor = 'var(--success)';
+            }
+            
+            meterFill.style.width = strengthPercentage + '%';
+            meterFill.style.background = strengthColor;
+            strengthText.textContent = strengthLabel;
+            strengthText.style.color = strengthColor;
+        });
+
+        // Form validation
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorElement = document.getElementById('password-error');
+            
+            // Check password length
+            if (password.length < 7) {
+                alert('Password must be at least 7 characters long');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorElement.style.display = 'block';
+                document.getElementById('confirm-password').style.borderColor = 'var(--error)';
+                document.getElementById('confirm-password').style.boxShadow = '0 0 0 3px rgba(245, 101, 101, 0.2)';
+            } else {
+                errorElement.style.display = 'none';
+                document.getElementById('confirm-password').style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                document.getElementById('confirm-password').style.boxShadow = 'none';
+                
+                // Get the profile picture
+                const profilePicInput = document.getElementById('profile-pic');
+                let profilePic = '';
+                
+                if (profilePicInput.files && profilePicInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profilePic = e.target.result;
+                        saveUserData(profilePic);
+                    }
+                    reader.readAsDataURL(profilePicInput.files[0]);
+                } else {
+                    // Default profile picture if none selected
+                    profilePic = 'https://randomuser.me/api/portraits/men/32.jpg';
+                    saveUserData(profilePic);
+                }
+                
+                function saveUserData(pic) {
+                    // Store user data
+                    const fullName = document.getElementById('full-name').value;
+                    localStorage.setItem('kronosvault_user', JSON.stringify({
+                        name: fullName,
+                        email: document.getElementById('email').value,
+                        profilePic: pic
+                    }));
+                    
+                    // Redirect to login page
+                    alert('Account created successfully! Please login.');
+                    window.location.href = 'KRONOSVAULT LOGIN.html';
+                }
+            }
+        });
+        
+        createParticles();
+        animate();
+
+        // Add slight mouse interaction
+        window.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.9) {
+                particles.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    size: Math.random() * 2 + 1,
+                    speed: Math.random() * 0.3 + 0.1,
+                    opacity: Math.random() * 0.3 + 0.2,
+                    angle: Math.random() * Math.PI * 2,
+                    sway: Math.random() * 0.2 - 0.1
+                });
+            }
+        });
+    </script>
+</body>
+</html>

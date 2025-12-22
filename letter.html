@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Future Letter | KronosVault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&family=IM+Fell+English&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00ffff;
+            --secondary: #eb89f6;
+            --accent: #ff9e3d;
+            --dark: #0a0a12;
+            --darker: #050508;
+            --text: #000000;
+            --text-dim: #333333;
+            --paper: #f5e7c9;
+            --ink: #3a3226;
+            --glow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #d1c7b7;
+            font-family: 'IM Fell English', serif;
+            color: var(--ink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            width: 100%;
+            background: var(--dark);
+            color: var(--primary);
+            padding: 1rem;
+            text-align: center;
+            font-family: 'Cinzel Decorative', cursive;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-shadow: var(--glow);
+        }
+
+        .content-wrapper {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .letter-container {
+            flex: 1;
+            background-color: var(--paper);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+            margin-bottom: 2rem;
+            border: 1px solid #c0a080;
+        }
+
+        .letter-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/old-paper.png');
+            opacity: 0.3;
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        .letter-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--ink);
+            padding-bottom: 1rem;
+        }
+
+        .letter-header h2 {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .letter-header p {
+            font-style: italic;
+            margin: 0.5rem 0 0;
+        }
+
+        .letter-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .letter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        input, textarea, select {
+            padding: 0.8rem;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 1px solid #c0a080;
+            border-radius: 4px;
+            font-family: 'IM Fell English', serif;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 300px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--dark);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .animation-area {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .letter-animation {
+            width: 300px;
+            height: 200px;
+            background: linear-gradient(to bottom right, #f9f3e9, #e8d8b5);
+            border-radius: 5px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform-origin: bottom center;
+            z-index: 10;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .capsule-container {
+            position: relative;
+            width: 150px;
+            height: 200px;
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .capsule {
+            width: 100px;
+            height: 180px;
+            background: linear-gradient(to bottom, #2c3e50, #34495e);
+            border-radius: 50px;
+            position: relative;
+            border: 5px solid #1a1a1a;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 255, 255, 0.5);
+            overflow: hidden;
+        }
+
+        .capsule-lid {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to bottom, #4a6b8a, #2c3e50);
+            border-radius: 50px 50px 0 0;
+            border-bottom: 3px solid #1a1a1a;
+        }
+
+        .locked {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: gold;
+            font-size: 2rem;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            display: none;
+        }
+
+        .confirmation {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            color: var(--primary);
+            display: none;
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        @keyframes foldLetter {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(200px) rotate(-20deg) scale(0.1); opacity: 0; }
+        }
+
+        @keyframes lockCapsule {
+            0% { box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 255, 255, 0.5); }
+            100% { box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 30px gold; }
+        }
+        
+        /* Updated Prompt Container Styles */
+        .prompt-container {
+            width: 280px;
+            background-color: var(--paper);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid #c0a080;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .prompt-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/old-paper.png');
+            opacity: 0.3;
+            pointer-events: none;
+            border-radius: 8px;
+        }
+        
+        .prompt-heading {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.2rem;
+            color: var(--ink);
+            margin-bottom: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--ink);
+            padding-bottom: 0.5rem;
+        }
+        
+        .prompt-text {
+            background-color: rgba(245, 231, 201, 0.7);
+            color: var(--ink);
+            font-size: 1rem;
+            line-height: 1.5;
+            padding: 1rem;
+            border-radius: 5px;
+            transition: opacity 0.5s ease-in-out;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .prompt-text::before {
+            content: '"';
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 2rem;
+            color: rgba(58, 50, 38, 0.2);
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .prompt-text::after {
+            content: '"';
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 2rem;
+            color: rgba(58, 50, 38, 0.2);
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .prompt-refresh {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--ink);
+            color: var(--ink);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: 'IM Fell English', serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .prompt-refresh:hover {
+            background-color: rgba(58, 50, 38, 0.1);
+        }
+        
+        .prompt-refresh i {
+            margin-right: 5px;
+        }
+        .back-btn {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        background: var(--dark);
+        color: var(--primary);
+        border: 1px solid var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-family: 'Cinzel Decorative', cursive;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    .back-btn:hover {
+        background: var(--primary);
+        color: var(--dark);
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>KRONOSVAULT - FUTURE LETTER</h1>
+        <a href="userdashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="prompt-container">
+            <h3 class="prompt-heading">Writing Inspiration</h3>
+            <div id="prompt-box" class="prompt-text"></div>
+            <button class="prompt-refresh" onclick="changePrompt()">
+                <i class="fas fa-sync-alt"></i> New Prompt
+            </button>
+        </div>
+
+        <div class="letter-container">
+            <div class="letter-header">
+                <h2>To My Future Self</h2>
+                <p>Write a message that will be delivered through time</p>
+            </div>
+
+            <form id="letterForm" class="letter-form">
+                <div class="form-group">
+                    <label for="letter-title">Capsule Title:</label>
+                    <input type="text" id="letter-title" placeholder="e.g., My Hopes for 2025" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="unlock-date">Unlock Date:</label>
+                    <input type="date" id="unlock-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="letter-content">Your Message:</label>
+                    <textarea id="letter-content" placeholder="Dear future me..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Create Time Capsule</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="animation-area" class="animation-area">
+        <div id="letter-animation" class="letter-animation">
+            <div id="letter-preview-content">Your message is being sealed in time...</div>
+        </div>
+        
+        <div class="capsule-container">
+            <div id="capsule" class="capsule">
+                <div class="capsule-lid"></div>
+            </div>
+            <div id="locked" class="locked">
+                <i class="fas fa-lock"></i>
+            </div>
+        </div>
+        
+        <div id="confirmation" class="confirmation">
+            <p>Your time capsule has been securely locked!</p>
+            <p><i class="fas fa-check-circle"></i> You'll be notified when it's ready to open.</p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const letterForm = document.getElementById('letterForm');
+            const animationArea = document.getElementById('animation-area');
+            
+            // Set minimum date to tomorrow
+            const dateInput = document.getElementById('unlock-date');
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.min = tomorrow.toISOString().split('T')[0];
+            
+            letterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const title = document.getElementById('letter-title').value;
+                const date = document.getElementById('unlock-date').value;
+                const content = document.getElementById('letter-content').value;
+                
+                // Validate
+                if (!title || !date || !content) {
+                    alert('Please fill all fields');
+                    return;
+                }
+                
+                // Show animation
+                animationArea.style.display = 'flex';
+                document.getElementById('letter-preview-content').textContent = 
+                    `${title}\n\nTo be opened on ${new Date(date).toLocaleDateString()}`;
+                
+                // Start animation sequence
+                animateCapsuleCreation(title, date, content);
+            });
+            
+            function animateCapsuleCreation(title, date, content) {
+                const letterAnim = document.getElementById('letter-animation');
+                const capsule = document.getElementById('capsule');
+                const locked = document.getElementById('locked');
+                
+                // 1. Fold letter animation
+                letterAnim.style.animation = 'foldLetter 2s forwards';
+                
+                setTimeout(() => {
+                    // 2. Show capsule
+                    capsule.style.display = 'block';
+                    
+                    // 3. Lock animation
+                    setTimeout(() => {
+                        locked.style.display = 'block';
+                        capsule.style.boxShadow = '0 0 30px gold';
+                        
+                        // 4. Save data and show confirmation
+                        setTimeout(() => {
+                            document.getElementById('confirmation').style.display = 'block';
+                            const capsuleId = saveCapsuleData(title, date, content);
+                            
+                            // 5. Redirect after 3 seconds
+                            setTimeout(() => {
+                                window.location.href = 'userdashboard.html?fromCreation=true';
+                            }, 3000);
+                        }, 1000);
+                    }, 500);
+                }, 2000);
+            }
+    
+            function saveCapsuleData(title, date, content) {
+    const userData = localStorage.getItem('kronosvault_user');
+    if (!userData) return;
+    
+    const user = JSON.parse(userData);
+    const userCapsules = JSON.parse(localStorage.getItem(`user_${user.email}_capsules`) || '[]');
+    
+    const newCapsule = {
+        id: 'capsule_' + Date.now(),
+        type: 'letter',
+        title: title, // Use exact user-provided title
+        content: content,
+        status: 'locked',
+        shared: false,
+        createdAt: new Date().toISOString(),
+        unlockDate: date
+    };
+    
+    userCapsules.push(newCapsule);
+    localStorage.setItem(`user_${user.email}_capsules`, JSON.stringify(userCapsules));
+    localStorage.setItem(`capsule_${newCapsule.id}_content`, content);
+    
+    // Force fresh load of dashboard
+    window.location.href = 'userdashboard.html?fresh=true';
+}
+    
+            // Prompt functionality
+            const prompts = [
+                "What is the biggest lesson you've learned this year?",
+                "How do you define success right now? Has it changed over time?",
+                "What advice would you give your future self?",
+                "What are you struggling with the most right now?",
+                "What's one thing you're proud of yourself for today?",
+                "How do you hope to grow as a person in the next year?",
+                "What is something you wish you did more often?",
+                "What's your biggest fear at this moment?",
+                "What's a bad habit you want to break?",
+                "What's a good habit you want to build?",
+                "Where do you see yourself five years from now?",
+                "What is one goal you are determined to achieve?",
+                "If money wasn't a concern, what would you be doing with your life?",
+                "What is your dream job, and why?",
+                "What's one skill you want to master in the future?",
+                "What is a personal project you've been wanting to start?",
+                "If you could work with anyone in the world, who would it be?",
+                "What would you say to yourself if you ever feel like giving up?",
+                "What's a passion you have that you hope never fades?",
+                "Describe the 'future you' you hope to become.",
+                "Who is the most important person in your life right now?",
+                "What's a conversation you recently had that changed your perspective?",
+                "Who do you hope to still be close to in the future?",
+                "Write a letter to someone who has impacted your life.",
+                "What would you say to someone who drifted away from you?",
+                "Who has been your biggest supporter recently?",
+                "If you could reconnect with one person from your past, who would it be?",
+                "What's the best piece of advice someone gave you?",
+                "What do you want to remind your future self about love and friendships?",
+                "What's something you hope to tell a loved one but haven't yet?",
+                "How would you describe your emotional state today?",
+                "What are the little things that bring you joy right now?",
+                "If your emotions could be summed up in a song, what would it be?",
+                "What's one thing that gives you hope even on bad days?",
+                "What do you do when you feel overwhelmed?",
+                "What's something you're holding onto that you should let go of?",
+                "What's a simple act of self-care that makes a big difference for you?",
+                "What's one comforting memory you'd like to revisit in the future?",
+                "How do you want your future self to handle stress better?",
+                "What makes you feel most at peace?",
+                "What is your happiest memory from the past year?",
+                "What's a childhood memory that still makes you smile?",
+                "If you could relive one day, which would it be?",
+                "What was the last thing that made you laugh uncontrollably?",
+                "What's something you've learned from your past mistakes?",
+                "If you could talk to your past self from five years ago, what would you say?",
+                "What's a moment you wish you could freeze in time?",
+                "What is something you once thought was a big deal but now seems small?",
+                "What's one thing you never want to forget about this phase of your life?",
+                "What is your most cherished possession, and why?",
+                "What's the biggest change you've gone through recently?",
+                "How do you feel about change right now?",
+                "What's something you thought would never happen, but it did?",
+                "If you could go back in time, would you change anything?",
+                "What's a risk you took that paid off?",
+                "How do you want to handle challenges in the future?",
+                "What's something uncertain in your life that excites you?",
+                "How do you want to remind yourself to embrace uncertainty?",
+                "What would you say to yourself if things don't go as planned?",
+                "What's a fear that you're slowly learning to overcome?",
+                "What's one thing happening in the world right now that you feel strongly about?",
+                "If you had the power to change one thing in the world, what would it be?",
+                "What do you hope humanity will have achieved in the future?",
+                "What's a cause you want to contribute to?",
+                "How do you want to make an impact in the world?",
+                "What's a recent news story that affected you deeply?",
+                "If you could send one message to the future generation, what would it be?",
+                "How do you want to contribute to making the world a better place?",
+                "What's one thing the world needs more of right now?",
+                "What's something about human nature that fascinates you?",
+                "If your life was a book, what would this chapter be called?",
+                "If you could describe yourself with three words, what would they be?",
+                "What's one thing you wish more people knew about you?",
+                "If your future self had a message for you, what do you think it would be?",
+                "What's a random thought that has been on your mind a lot lately?",
+                "What's a question you wish you had the answer to?",
+                "If you could be anywhere right now, where would it be?",
+                "If you had to create a motto for your life, what would it be?",
+                "What's a small act of kindness you recently witnessed?"
+            ];
+    
+            function changePrompt() {
+                const promptBox = document.getElementById("prompt-box");
+                const randomIndex = Math.floor(Math.random() * prompts.length);
+                
+                // Fade out
+                promptBox.style.opacity = 0;
+                
+                // Change content after fade out completes
+                setTimeout(() => {
+                    promptBox.textContent = prompts[randomIndex];
+                    // Fade in
+                    promptBox.style.opacity = 1;
+                }, 500);
+            }
+    
+            // Initialize first prompt
+            changePrompt();
+            
+            // Set up automatic prompt rotation (every 10 seconds)
+            setInterval(changePrompt, 7000);
+        });
+    </script>
+    
+</body>
+</html>

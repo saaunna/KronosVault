@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>About Us | KronosVault</title>
+    <style>
+        body {
+            background: url('c:/Users/sahan/Downloads/background.jpg') no-repeat center center/cover;
+            margin: 0;
+            font-family: "Apple Chancery", "Monotype Corsiva", "Brush Script MT", cursive;
+            color:rgb(222, 213, 201);
+            padding: 30px;
+        }
+        .content {
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            perspective: 1000px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        .grid-item {
+            width: 250px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            transition: transform 0.3s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+        }
+        .grid-item:hover {
+            transform: rotateY(10deg) rotateX(10deg) scale(1.1);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1 style="background-color: black; color:coral;">About KronosVault- A Journey Through Time</h1>
+        <h3>✧･ﾟ: *✧･ﾟ:* ✿ *:･ﾟ✧*:･ﾟ✧</h3>
+        <H2 style="margin-top: 40px;line-height: 40px;">Time is fleeting, but memories are forever. Welcome to KronosVault, a revolutionary digital time capsule that allows you to preserve your most cherished moments and unlock them in the future. Whether it's a heartfelt message, a special memory, or a vision for tomorrow, KronosVault ensures your story stands the test of time.</h2>
+            <h3>✧･ﾟ: *✧･ﾟ:* ✿ *:･ﾟ✧*:･ﾟ✧</h3>
+            <h1 style="background-color: black; color:coral;">Why us?</h1>
+            <div class="grid-container">
+            <div class="grid-item">💡 Secure & Encrypted- Your memories are stored with top tier encryption, ensuring privacy and security. </div>
+            <div class="grid-item">🌍 Timeless & Global - No matter where you are, your moments are preserved and accessible at the right time. </div>
+            <div class="grid-item">🔮 Unlock the Future - Set future unlock dates and experience nostalgia like never before. </div>
+        </div>
+
+
+    </div>
+</body>
+</html>

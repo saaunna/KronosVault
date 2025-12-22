@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KronosVault | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00f7ff;          /* Neon cyan */
+            --secondary: #ff00aa;        /* Neon pink */
+            --accent: #ff8a00;           /* Neon orange */
+            --dark: #0a0a1a;             /* Dark blue background */
+            --darker: #050510;           /* Darker blue */
+            --card-bg: rgba(15, 20, 30, 0.7);  /* Semi-transparent blue cards */
+            --text: #ffffff;             /* White text */
+            --text-dim: #b0b0ff;         /* Dimmed blue text */
+            --glow: 0 0 10px rgba(0, 247, 255, 0.7);
+            --secondary-glow: 0 0 10px rgba(255, 0, 170, 0.5);
+            --accent-glow: 0 0 10px rgba(255, 138, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Audiowide', sans-serif;
+        }
+
+        body {
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 100, 150, 0.2) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(150, 0, 100, 0.2) 0%, transparent 30%),
+                linear-gradient(to bottom, var(--darker), var(--dark));
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Cyberpunk Scanlines Effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(0, 247, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 247, 255, 0.03) 1px, transparent 1px);
+            background-size: 3px 3px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: rgba(10, 15, 25, 0.8);
+            border-bottom: 1px solid var(--primary);
+            position: relative;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo {
+            font-family: 'Audiowide', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            letter-spacing: 3px;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            object-fit: cover;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .greeting {
+            font-size: 1rem;
+            text-align: right;
+            color: var(--text-dim);
+        }
+
+        .greeting strong {
+            color: var(--primary);
+            font-weight: 500;
+            display: block;
+            font-size: 1.2rem;
+            text-shadow: var(--glow);
+        }
+
+        /* Main Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            padding: 2rem 3rem;
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Right Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-shadow: var(--glow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.05) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--primary);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .action-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            transition: all 0.3s ease;
+        }
+
+        .action-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .action-card p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .action-card:hover {
+            background: rgba(0, 247, 255, 0.1);
+        }
+
+        .action-card:hover i {
+            transform: scale(1.2);
+            color: var(--secondary);
+            text-shadow: var(--secondary-glow);
+        }
+
+        /* Image Widget Styles */
+        .image-widget {
+            width: 100%;
+            height: 120px;
+            background-color: rgba(0, 247, 255, 0.05);
+            border: 1px dashed var(--primary);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .image-widget img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .image-widget .placeholder {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        /* File Upload Styles */
+        .file-upload {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Time Capsule Types */
+        .capsule-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .capsule-type {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .capsule-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 5px var(--primary));
+            transition: all 0.3s ease;
+        }
+
+        .capsule-label {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .capsule-type:hover {
+            background: rgba(255, 0, 170, 0.1);
+        }
+
+        .capsule-type:hover .capsule-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px var(--secondary));
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(0, 247, 255, 0.05);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-shadow: var(--glow);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Recent Capsules */
+        .capsules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .capsule-item {
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: rgba(15, 20, 30, 0.7);
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .capsule-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+
+        .capsule-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+        }
+
+        .capsule-preview {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .capsule-preview.blurred {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+        
+        .capsule-unlock-date {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+        }
+
+        .capsule-name {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .capsule-name i {
+            font-size: 1rem;
+            color: var(--secondary);
+        }
+
+        .capsule-date {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .capsule-status {
+            padding: 0.3rem 0;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-locked {
+            background: rgba(255, 0, 170, 0.2);
+            color: var(--secondary);
+        }
+
+        .status-unlocked {
+            background: rgba(0, 247, 255, 0.2);
+            color: var(--primary);
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: rgba(15, 20, 30, 0.7);
+            border: 1px solid rgba(255, 138, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--accent-glow);
+            border-color: var(--accent);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-shadow: var(--accent-glow);
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* Locked Capsule Overlay */
+        .locked-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 25, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        .locked-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--secondary);
+            box-shadow: var(--secondary-glow);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            filter: blur(8px);
+        }
+
+        .unlocking-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .unlock-message {
+            color: var(--primary);
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            text-shadow: var(--glow);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .quick-actions, .stats-overview, .capsule-types {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quick-actions, .stats-overview, .capsule-types, .capsules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+        .action-icon {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .action-icon i {
+            font-size: 2rem;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            transition: all 0.3s ease;
+        }
+        .blurred-preview {
+            filter: blur(5px);
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .blurred-preview i {
+            color: var(--primary);
+            text-shadow: var(--glow);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">KRONOSVAULT</div>
+        <div class="user-profile">
+            <div class="greeting">WELCOME<br><strong id="username">TIME TRAVELER</strong></div>
+            <img id="profile-pic" class="profile-pic" alt="Profile">
+        </div>
+    </header>
+
+    <div class="dashboard-grid">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <!-- Quick Actions -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-bolt"></i> QUICK ACTIONS</h2>
+                <div class="quick-actions">
+                    <div class="action-card">
+                        <input type="file" id="memory-upload" class="file-upload" accept="image/*">
+                        <div class="action-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3>Upload Memory</h3>
+                        <p>Save a moment to revisit later</p>
+                    </div>
+                    <div class="action-card">
+                        <div class="image-widget">
+                            <img id="uploaded-image" src="" alt="Uploaded Memory">
+                            <div class="placeholder">Your memory will appear here</div>
+                        </div>
+                        <h3>Memory Preview</h3>
+                        <p>View your saved moments</p>
+                    </div>
+                    <div class="action-card" onclick="location.href='timeline_view.html'">
+                        <div class="action-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>View Timeline</h3>
+                        <p>Explore your memory journey</p>
+                    </div>
+                    <div class="action-card" onclick="location.href='https://music.youtube.com/'">
+                        <div class="action-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <h3>Music</h3>
+                        <p>Find your choice of Music here</p>
+                    </div>
+                    <div class="action-card" onclick="location.href='features.html'">
+                        <div class="action-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3>Features</h3>
+                        <p>Explore possibilities</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-chart-line"></i> STATS</h2>
+                <div class="stats-overview">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-capsules">0</div>
+                        <div class="stat-label">Capsules</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="unlocked-capsules">0</div>
+                        <div class="stat-label">Unlocked</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="locked-capsules">0</div>
+                        <div class="stat-label">Locked</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="shared-capsules">0</div>
+                        <div class="stat-label">Shared</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Create New Capsule Section -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-plus"></i> CREATE CAPSULE</h2>
+                <div class="capsule-types">
+                    <div class="capsule-type" onclick="createCapsule('letter')">
+                        <img src="letter.gif" alt="Future Letter" class="capsule-icon">
+                        <div class="capsule-label">Future Letter</div>
+                    </div>
+                    <div class="capsule-type" onclick="openMemoryTimeline()">
+                        <img src="timeline.gif" alt="Timeline" class="capsule-icon" style="width: 220px; height: 220px;">
+                        <div class="capsule-label">Memory Timeline</div>
+                    </div>
+                    <div class="capsule-type" onclick="createCapsule('music')">
+                        <img src="music.gif" alt="Music Capsule" class="capsule-icon" style="width: 220px; height: 220px;">
+                        <div class="capsule-label">Music Capsule</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Capsules -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-clock"></i> RECENT CAPSULES</h2>
+                <div class="capsules-grid" id="recent-capsules">
+                    <!-- Capsules will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-gem"></i> KEY FEATURES</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <h3 class="feature-title">Time Capsules</h3>
+                        <p class="feature-desc">Secure digital vaults that unlock on your chosen future date.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-bell"></i></div>
+                        <h3 class="feature-title">Reminders</h3>
+                        <p class="feature-desc">Get notifications when it's time to reflect or add new memories.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-share-alt"></i></div>
+                        <h3 class="feature-title">Shared Vaults</h3>
+                        <p class="feature-desc">Collaborate with friends and family on group time capsules.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Locked Capsule Overlay -->
+    <div class="locked-overlay" id="locked-overlay">
+        <div class="unlocking-progress" id="unlocking-progress"></div>
+        <div class="locked-content" id="locked-content">
+            <h3>This capsule is locked</h3>
+            <p>You'll be able to view this content when the capsule unlocks on its scheduled date.</p>
+        </div>
+        <div class="unlock-message" id="unlock-message">Unlocking in progress...</div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user data from localStorage
+            const userData = localStorage.getItem('kronosvault_user');
+    if (userData) {
+        const user = JSON.parse(userData);
+        document.getElementById('username').textContent = user.name.toUpperCase();
+        
+        // Update profile picture if available
+        const profilePic = document.getElementById('profile-pic');
+        if (user.profilePic) {
+            profilePic.src = user.profilePic;
+        }
+
+        // Load and display capsules - ONLY ONCE
+        const userCapsules = JSON.parse(localStorage.getItem(`user_${user.email}_capsules`) || []);
+        displayRecentCapsules(userCapsules); // This will call updateStats() internally
+    }
+            
+            // Image upload functionality
+            const memoryUpload = document.getElementById('memory-upload');
+            const uploadedImage = document.getElementById('uploaded-image');
+            const imagePlaceholder = document.querySelector('.image-widget .placeholder');
+            
+            memoryUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadedImage.src = event.target.result;
+                        uploadedImage.style.display = 'block';
+                        imagePlaceholder.style.display = 'none';
+                        
+                        // Save to localStorage with user-specific key
+                        const userData = localStorage.getItem('kronosvault_user');
+                        if (userData) {
+                            const user = JSON.parse(userData);
+                            localStorage.setItem(`user_${user.email}_lastUploadedMemory`, event.target.result);
+                            
+                            // Add to user's memory timeline
+                            const userMemories = JSON.parse(localStorage.getItem(`user_${user.email}_memories`) || '[]');
+                            userMemories.push({
+                                id: 'memory_' + Date.now(),
+                                type: 'image',
+                                content: event.target.result,
+                                date: new Date().toISOString(),
+                                title: 'Memory ' + (userMemories.length + 1),
+                                description: 'Uploaded memory'
+                            });
+                            localStorage.setItem(`user_${user.email}_memories`, JSON.stringify(userMemories));
+                        }
+                        
+                        // Add animation
+                        uploadedImage.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            uploadedImage.style.transform = 'scale(1)';
+                            uploadedImage.style.transition = 'transform 0.3s ease';
+                        }, 10);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Update timeline view link to include user email
+            const timelineLink = document.querySelector('.action-card[onclick*="timeline_view.html"]');
+            timelineLink.onclick = function() {
+                const userData = localStorage.getItem('kronosvault_user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    window.location.href = `timeline_view.html?user=${encodeURIComponent(user.email)}`;
+                }
+            };
+            
+            // Add cyberpunk terminal effect to text
+            const elements = document.querySelectorAll('.card, .section-title');
+            elements.forEach(el => {
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.style.transition = 'opacity 0.5s ease';
+                    el.style.opacity = '1';
+                }, Math.random() * 500);
+            });
+            
+            // Add subtle background animation
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                document.body.style.backgroundPosition = `${x * 20}px ${y * 20}px`;
+            });
+        });
+        
+        // Combined function to update both stats and recent capsules
+function updateDashboard(capsules) {
+    updateStats(capsules);
+    displayRecentCapsules(capsules);
+}
+
+function updateStats(capsules) {
+    document.getElementById('total-capsules').textContent = capsules.length;
+    document.getElementById('unlocked-capsules').textContent = capsules.filter(c => c.status === 'unlocked').length;
+    document.getElementById('locked-capsules').textContent = capsules.filter(c => c.status === 'locked').length;
+    document.getElementById('shared-capsules').textContent = capsules.filter(c => c.shared).length;
+}
+
+function displayRecentCapsules(capsules) {
+    const recentCapsulesContainer = document.getElementById('recent-capsules');
+    recentCapsulesContainer.innerHTML = '';
+
+    // Filter out generic capsules and sort by date
+    const recentCapsules = capsules
+        .filter(c => !c.title.includes('Capsule')) // Remove generic capsules
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 4);
+
+    // Update stats ONCE here
+    updateStats(capsules);
+
+    if (recentCapsules.length === 0) {
+        recentCapsulesContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-dim);">No capsules created yet</p>';
+        return;
+    }
+
+    recentCapsules.forEach(capsule => {
+        const capsuleItem = document.createElement('div');
+        capsuleItem.className = 'capsule-item';
+        
+        let iconClass;
+        switch(capsule.type) {
+            case 'letter': iconClass = 'fas fa-envelope'; break;
+            case 'music': iconClass = 'fas fa-music'; break;
+            case 'timeline': iconClass = 'fas fa-images'; break;
+            default: iconClass = 'fas fa-capsules';
+        }
+
+        const date = new Date(capsule.createdAt);
+        const formattedDate = date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        const unlockDate = new Date(capsule.unlockDate);
+        const formattedUnlockDate = unlockDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+
+        capsuleItem.innerHTML = `
+            <div class="capsule-preview">
+                <div class="capsule-name"><i class="${iconClass}"></i> ${capsule.title}</div>
+                <div class="capsule-date">Created: ${formattedDate}</div>
+                <div class="capsule-unlock-date">Unlocks: ${formattedUnlockDate}</div>
+            </div>
+            <div class="capsule-status ${capsule.status === 'locked' ? 'status-locked' : 'status-unlocked'}">
+                ${capsule.status === 'locked' ? 'LOCKED' : 'UNLOCKED'}
+            </div>
+        `;
+
+        capsuleItem.addEventListener('click', () => {
+            if (capsule.status === 'locked') {
+                showLockedCapsulePreview(capsule);
+            } else {
+                viewCapsule(capsule.id);
+            }
+        });
+
+        recentCapsulesContainer.appendChild(capsuleItem);
+    });
+}
+
+        
+        // Function to show locked capsule preview
+        function showLockedCapsulePreview(capsule) {
+    const overlay = document.getElementById('locked-overlay');
+    const progressBar = document.getElementById('unlocking-progress');
+    const unlockMessage = document.getElementById('unlock-message');
+    const lockedContent = document.getElementById('locked-content');
+    
+    // Custom content based on capsule type
+    let previewContent = '';
+    if (capsule.type === 'letter') {
+        previewContent = `
+            <h3>${capsule.title}</h3>
+            <p>Unlocks on: ${new Date(capsule.unlockDate).toLocaleDateString()}</p>
+            <div class="blurred-preview">
+                <p>${capsule.content.substring(0, 100)}...</p>
+            </div>
+        `;
+    } else if (capsule.type === 'music') {
+        previewContent = `
+            <h3>${capsule.title}</h3>
+            <p>Unlocks on: ${new Date(capsule.unlockDate).toLocaleDateString()}</p>
+            <div class="blurred-preview">
+                <i class="fas fa-music" style="font-size: 3rem; margin: 20px;"></i>
+                <p>Your music capsule is locked</p>
+                ${capsule.songTitle ? `<p>Contains: ${capsule.songTitle}</p>` : ''}
+            </div>
+        `;
+    }
+    
+    lockedContent.innerHTML = previewContent;
+    overlay.style.display = 'flex';
+    progressBar.style.width = '0%';
+    
+    // Simulate unlocking progress (6 seconds)
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 1;
+        progressBar.style.width = `${progress}%`;
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            unlockMessage.textContent = 'Capsule is still locked!';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 2000);
+        }
+    }, 60);
+    
+    // Close overlay if clicked
+    overlay.addEventListener('click', function closeOverlay() {
+        clearInterval(interval);
+        overlay.style.display = 'none';
+        overlay.removeEventListener('click', closeOverlay);
+    });
+}
+        
+        // Function to create a new capsule
+        function createCapsule(type) {
+            const userData = localStorage.getItem('kronosvault_user');
+            if (!userData) return;
+        
+            const user = JSON.parse(userData);
+            const userCapsules = JSON.parse(localStorage.getItem(`user_${user.email}_capsules`) || '[]');
+        
+            const newCapsule = {
+                id: 'capsule_' + Date.now(),
+                type: type,
+                title: type.charAt(0).toUpperCase() + type.slice(1) + ' Capsule',
+                status: 'locked',
+                shared: false,
+                createdAt: new Date().toISOString(),
+                unlockDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // Default: 30 days from now
+            };
+        
+            userCapsules.push(newCapsule);
+            localStorage.setItem(`user_${user.email}_capsules`, JSON.stringify(userCapsules));
+            
+            // Add the fromCreation parameter to the URL
+            let redirectUrl = '';
+            if (type === 'letter') {
+                redirectUrl = 'letter.html?user=' + encodeURIComponent(user.email);
+            } else if (type === 'music') {
+                redirectUrl = 'music.html?user=' + encodeURIComponent(user.email);
+            }
+            
+            window.location.href = redirectUrl + '&fromCreation=true';
+        }
+        
+        // Function to view a capsule (placeholder)
+        function viewCapsule(capsuleId) {
+            alert('Viewing capsule: ' + capsuleId);
+            // In a real app, this would redirect to a capsule viewing page
+        }
+        
+        // Profile picture dropdown functionality
+        document.getElementById('profile-pic').addEventListener('click', function() {
+            // Create dropdown menu
+            const dropdown = document.createElement('div');
+            dropdown.style.position = 'absolute';
+            dropdown.style.right = '3rem';
+            dropdown.style.top = '5rem';
+            dropdown.style.backgroundColor = 'rgba(10, 15, 25, 0.95)';
+            dropdown.style.border = '1px solid var(--primary)';
+            dropdown.style.borderRadius = '5px';
+            dropdown.style.padding = '0.5rem 0';
+            dropdown.style.boxShadow = 'var(--glow)';
+            dropdown.style.zIndex = '1000';
+            dropdown.style.minWidth = '150px';
+            
+            // Add logout option
+            const logoutOption = document.createElement('div');
+            logoutOption.textContent = 'LOGOUT';
+            logoutOption.style.padding = '0.5rem 1rem';
+            logoutOption.style.color = 'var(--primary)';
+            logoutOption.style.cursor = 'pointer';
+            logoutOption.style.transition = 'all 0.3s ease';
+            logoutOption.addEventListener('mouseenter', () => {
+                logoutOption.style.backgroundColor = 'rgba(0, 247, 255, 0.1)';
+            });
+            logoutOption.addEventListener('mouseleave', () => {
+                logoutOption.style.backgroundColor = 'transparent';
+            });
+            logoutOption.addEventListener('click', () => {
+                // Create logout overlay
+                const overlay = document.createElement('div');
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.backgroundColor = 'rgba(10, 15, 25, 0.9)';
+                overlay.style.display = 'flex';
+                overlay.style.flexDirection = 'column';
+                overlay.style.justifyContent = 'center';
+                overlay.style.alignItems = 'center';
+                overlay.style.zIndex = '2000';
+                overlay.style.color = 'var(--primary)';
+                overlay.style.fontSize = '1.5rem';
+                overlay.style.backdropFilter = 'blur(5px)';
+                
+                // Add loading text with dots animation
+                const loadingText = document.createElement('div');
+                loadingText.textContent = 'Logging you out';
+                loadingText.style.marginBottom = '1rem';
+                
+                const dots = document.createElement('span');
+                dots.id = 'logout-dots';
+                dots.textContent = '...';
+                loadingText.appendChild(dots);
+                
+                // Add "Please wait" text
+                const pleaseWait = document.createElement('div');
+                pleaseWait.textContent = 'Please wait';
+                pleaseWait.style.fontSize = '1rem';
+                pleaseWait.style.color = 'var(--text-dim)';
+                
+                overlay.appendChild(loadingText);
+                overlay.appendChild(pleaseWait);
+                document.body.appendChild(overlay);
+                
+                // Animate dots
+                let dotCount = 0;
+                const dotInterval = setInterval(() => {
+                    dotCount = (dotCount + 1) % 4;
+                    document.getElementById('logout-dots').textContent = '.'.repeat(dotCount);
+                }, 500);
+                
+                // Remove dropdown
+                document.body.removeChild(dropdown);
+                
+                // Redirect after delay
+                setTimeout(() => {
+                    clearInterval(dotInterval);
+                    window.location.href = 'landingpage.html';
+                }, 4000);
+            });
+            
+            dropdown.appendChild(logoutOption);
+            
+            // Add to body
+            document.body.appendChild(dropdown);
+            
+            // Remove dropdown when clicking elsewhere
+            function removeDropdown(e) {
+                if (!dropdown.contains(e.target) && e.target !== this) {
+                    document.body.removeChild(dropdown);
+                    document.removeEventListener('click', removeDropdown);
+                }
+            }
+            
+            setTimeout(() => {
+                document.addEventListener('click', removeDropdown);
+            }, 10);
+        });
+        
+        function openMemoryTimeline() {
+            const userData = localStorage.getItem('kronosvault_user');
+            if (userData) {
+                const user = JSON.parse(userData);
+                window.location.href = `memorytimeline.html?user=${encodeURIComponent(user.email)}`;
+            }
+        }
+        </script>
+</body>
+</html>

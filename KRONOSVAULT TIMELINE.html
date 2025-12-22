@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Preview</title>
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            background: #FFF8E7;
+            color: #3E2723;
+            padding: 2rem;
+            text-align: center;
+        }
+        .timeline-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #D2B48C;
+        }
+        h1 {
+            color: #8B5A2B;
+        }
+        .timeline {
+            margin-top: 20px;
+            text-align: left;
+            position: relative;
+        }
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            width: 4px;
+            height: 100%;
+            background: #6D4C41;
+        }
+        .timeline-item {
+            margin-bottom: 20px;
+            padding-left: 40px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            top: 0;
+            font-size: 1.5rem;
+            color: #A67C52;
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline-container">
+        <h1 id="timeline-title"></h1>
+        <p><strong>Unlock Date:</strong> <span id="unlock-date"></span></p>
+        <div class="timeline" id="timeline-events"></div>
+    </div>
+
+    <script>
+        // Retrieve timeline data from localStorage
+        const timelineData = JSON.parse(localStorage.getItem('timelineData'));
+
+        if (timelineData) {
+            document.getElementById('timeline-title').textContent = timelineData.title;
+            document.getElementById('unlock-date').textContent = timelineData.unlockDate;
+
+            const eventsContainer = document.getElementById('timeline-events');
+            timelineData.events.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.classList.add('timeline-item');
+                eventElement.textContent = event;
+                eventsContainer.appendChild(eventElement);
+            });
+        } else {
+            document.body.innerHTML = '<h2>No timeline data found</h2>';
+        }
+    </script>
+</body>
+</html>

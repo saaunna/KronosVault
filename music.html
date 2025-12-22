@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Time Capsule | Melody Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a1b9a;
+            --secondary: #ff9800;
+            --dark: #121212;
+            --card-bg: rgba(30, 30, 30, 0.9);
+            --text: #ffffff;
+            --text-dim: #b3b3b3;
+            --highlight: #1db954;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #000000, #121212);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Animations */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .music-particle {
+            position: absolute;
+            color: var(--highlight);
+            font-size: 1.5rem;
+            opacity: 0.3;
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .pulse-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(29, 185, 84, 0.1);
+            animation: pulse 8s infinite ease-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .header {
+            background: linear-gradient(to right, var(--primary), #8e24aa);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--highlight);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-family: 'Pacifico', cursive;
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .music-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--highlight);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            color: var(--highlight);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--highlight);
+            border-radius: 5px;
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Fixed date picker */
+        input[type="date"] {
+            position: relative;
+        }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            color: transparent;
+            background: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+
+        .music-preview {
+            height: 250px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--highlight);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .album-art {
+            width: 150px;
+            height: 150px;
+            border-radius: 5px;
+            background-color: #333;
+            background-size: cover;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .song-info {
+            text-align: center;
+        }
+
+        .song-info h3 {
+            margin: 0.5rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .song-info p {
+            margin: 0;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .music-visualizer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 3px;
+        }
+
+        .visualizer-bar {
+            width: 4px;
+            background: var(--highlight);
+            border-radius: 2px 2px 0 0;
+            animation: equalizer 1.5s infinite ease-in-out;
+        }
+
+        @keyframes equalizer {
+            0%, 100% { height: 20%; }
+            50% { height: 90%; }
+        }
+
+        .submit-btn {
+            background: linear-gradient(to right, var(--highlight), var(--secondary));
+            color: black;
+            border: none;
+            padding: 1rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        /* Animation Area */
+        .animation-area {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .music-animation {
+            width: 300px;
+            height: 200px;
+            background: linear-gradient(135deg, #282828, #121212);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--highlight);
+            text-align: center;
+            padding: 1rem;
+            box-shadow: 0 0 20px var(--highlight);
+            border: 1px solid var(--highlight);
+        }
+
+        .vinyl-animation {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(to bottom, #121212, #000000);
+            border-radius: 50%;
+            margin-top: 2rem;
+            position: relative;
+            border: 3px solid #333;
+            display: none;
+            animation: spin 2s linear infinite;
+        }
+
+        .vinyl-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Pacifico', cursive;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .music-note {
+            position: absolute;
+            color: var(--highlight);
+            font-size: 2rem;
+            animation: floatNote 3s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatNote {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .confirmation {
+            color: var(--highlight);
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            color: var(--highlight);
+            margin-top: 0.5rem;
+        }
+
+        /* Music API response styling */
+        .api-response {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .back-btn {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .back-btn:hover {
+        background: var(--highlight);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    </style>
+</head>
+<body>
+    <!-- Background Animations -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <div class="header">
+        <h1>Create Music Time Capsule</h1>
+        <a href="userdashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="music-container">
+        <form id="musicForm">
+            <div class="form-group">
+                <label for="capsule-title">Capsule Title</label>
+                <input type="text" id="capsule-title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="unlock-date">Unlock Date</label>
+                <input type="date" id="unlock-date" required>
+            </div>
+
+            <div class="form-group">
+                <label>Song Preview</label>
+                <div class="music-preview">
+                    <div class="music-visualizer">
+                        <div class="visualizer-bar" style="animation-delay: 0s;"></div>
+                        <div class="visualizer-bar" style="animation-delay: 0.2s;"></div>
+                        <div class="visualizer-bar" style="animation-delay: 0.4s;"></div>
+                        <div class="visualizer-bar" style="animation-delay: 0.6s;"></div>
+                        <div class="visualizer-bar" style="animation-delay: 0.8s;"></div>
+                    </div>
+                    <div class="album-art" id="album-art"></div>
+                    <div class="song-info">
+                        <h3 id="song-title">No song selected</h3>
+                        <p id="song-artist">Add a song link to preview</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="song-link">Song Link (YouTube/Spotify)</label>
+                <input type="text" id="song-link" placeholder="Paste YouTube or Spotify link">
+                <button type="button" id="analyze-btn" style="margin-top: 0.5rem; padding: 0.7rem; background: var(--highlight); color: black; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    Analyze Song
+                </button>
+                <div class="loading" id="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Analyzing song...
+                </div>
+                <div class="api-response" id="api-response" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="memories">Memories</label>
+                <textarea id="memories" rows="4" placeholder="What memories does this song hold?"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Create Time Capsule</button>
+        </form>
+    </div>
+
+    <!-- Animation Area -->
+    <div id="animation-area" class="animation-area">
+        <div class="music-note" style="left: 20%;">♪</div>
+        <div class="music-note" style="left: 40%; animation-delay: 0.5s;">♫</div>
+        <div class="music-note" style="left: 60%; animation-delay: 1s;">♩</div>
+        <div class="music-note" style="left: 80%; animation-delay: 1.5s;">♬</div>
+        
+        <div id="music-animation" class="music-animation">
+            Sealing your music memories...
+        </div>
+        <div id="vinyl-animation" class="vinyl-animation">
+            <div class="vinyl-label">
+                <i class="fas fa-lock" style="font-size: 1.5rem; color: var(--highlight);"></i>
+            </div>
+        </div>
+        <div id="confirmation" class="confirmation">
+            <p>Your music capsule is now preserved!</p>
+            <p>Returning to dashboard...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create background animations
+            function createBackgroundAnimations() {
+                const bg = document.getElementById('bgAnimation');
+                const notes = ['♪', '♫', '♩', '♬'];
+                
+                // Create music notes
+                for (let i = 0; i < 15; i++) {
+                    const note = document.createElement('div');
+                    note.className = 'music-particle';
+                    note.textContent = notes[Math.floor(Math.random() * notes.length)];
+                    note.style.left = Math.random() * 100 + 'vw';
+                    note.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                    note.style.animationDelay = Math.random() * 5 + 's';
+                    bg.appendChild(note);
+                }
+                
+                // Create pulse circles
+                for (let i = 0; i < 5; i++) {
+                    const circle = document.createElement('div');
+                    circle.className = 'pulse-circle';
+                    circle.style.width = (Math.random() * 300 + 100) + 'px';
+                    circle.style.height = circle.style.width;
+                    circle.style.left = Math.random() * 100 + 'vw';
+                    circle.style.top = Math.random() * 100 + 'vh';
+                    circle.style.animationDelay = Math.random() * 5 + 's';
+                    bg.appendChild(circle);
+                }
+            }
+            
+            createBackgroundAnimations();
+    
+            // Set minimum date to tomorrow
+            const dateInput = document.getElementById('unlock-date');
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.min = tomorrow.toISOString().split('T')[0];
+            
+            // Make date picker clickable
+            dateInput.addEventListener('focus', function() {
+                this.showPicker();
+            });
+    
+            // Song analysis with actual API call (using AudioDB as example)
+            document.getElementById('analyze-btn').addEventListener('click', async function() {
+                const link = document.getElementById('song-link').value.trim();
+                if (!link) return alert('Please enter a song link');
+                
+                const loading = document.getElementById('loading');
+                const apiResponse = document.getElementById('api-response');
+                loading.style.display = 'block';
+                apiResponse.style.display = 'none';
+                
+                try {
+                    // Extract track and artist name from link (simplified)
+                    let track, artist;
+                    
+                    if (link.includes('spotify.com/track/')) {
+                        // For Spotify links - in reality you'd use the Spotify API
+                        track = "Blinding Lights";
+                        artist = "The Weeknd";
+                    } else if (link.includes('youtube.com') || link.includes('youtu.be')) {
+                        // For YouTube links - in reality you'd use the YouTube API
+                        track = "Levitating";
+                        artist = "Dua Lipa";
+                    } else {
+                        throw new Error('Invalid music link - please use Spotify or YouTube');
+                    }
+                    
+                    // Simulate API delay
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Display the mock analysis results
+                    document.getElementById('album-art').style.backgroundImage = link.includes('spotify') ? 
+                        'url(https://i.scdn.co/image/ab67616d00001e02a935e865c9e1c0ee2e2466f2)' : 
+                        'url(https://i.ytimg.com/vi/TUVcZfQe-Kw/maxresdefault.jpg)';
+                    document.getElementById('song-title').textContent = track;
+                    document.getElementById('song-artist').textContent = artist;
+                    
+                    // Show API response (mock)
+                    apiResponse.innerHTML = `
+                        <strong>Analysis Result:</strong> 
+                        <div>Track: ${track}</div>
+                        <div>Artist: ${artist}</div>
+                        <div>Source: ${link.includes('spotify') ? 'Spotify' : 'YouTube'}</div>
+                    `;
+                    apiResponse.style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('Error analyzing song:', error);
+                    apiResponse.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                    apiResponse.style.color = '#ff5252';
+                    apiResponse.style.display = 'block';
+                    
+                    // Fallback to demo data
+                    document.getElementById('album-art').style.backgroundImage = 'url(https://via.placeholder.com/150)';
+                    document.getElementById('song-title').textContent = "Demo Song";
+                    document.getElementById('song-artist').textContent = "Demo Artist";
+                } finally {
+                    loading.style.display = 'none';
+                }
+            });
+    
+            // Form submission
+            document.getElementById('musicForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const title = document.getElementById('capsule-title').value;
+                const date = document.getElementById('unlock-date').value;
+                const songLink = document.getElementById('song-link').value;
+                const memories = document.getElementById('memories').value;
+                const songTitle = document.getElementById('song-title').textContent;
+                const songArtist = document.getElementById('song-artist').textContent;
+                const albumArt = document.getElementById('album-art').style.backgroundImage || 'none';
+                
+                if (!title || !date || songTitle === 'No song selected') {
+                    return alert('Please fill all required fields and analyze a song');
+                }
+                
+                // Get user email from URL or localStorage
+                const urlParams = new URLSearchParams(window.location.search);
+                let userEmail = urlParams.get('user');
+                
+                if (!userEmail) {
+                    const userData = localStorage.getItem('kronosvault_user');
+                    if (userData) {
+                        userEmail = JSON.parse(userData).email;
+                    } else {
+                        userEmail = 'guest@example.com';
+                    }
+                }
+                
+                // Prepare capsule data
+                const newCapsule = {
+                id: 'capsule_' + Date.now(),
+                type: 'music',
+                title: title, // Your custom title
+                songTitle: songTitle, // The actual song title
+                status: 'locked',
+                shared: false,
+                createdAt: new Date().toISOString(),
+                unlockDate: date
+            };
+                
+                // Save the capsule data to user's storage
+                let userCapsules = JSON.parse(localStorage.getItem(`user_${userEmail}_capsules`) || '[]');
+                userCapsules.push(capsuleData);
+                localStorage.setItem(`user_${userEmail}_capsules`, JSON.stringify(userCapsules));
+    
+                // Calculate and save stats immediately
+                const totalCapsules = userCapsules.length;
+                const unlockedCapsules = userCapsules.filter(c => c.status === 'unlocked').length;
+                const lockedCapsules = userCapsules.filter(c => c.status === 'locked').length;
+                const sharedCapsules = userCapsules.filter(c => c.shared).length;
+    
+                localStorage.setItem(`user_${userEmail}_stats`, JSON.stringify({
+                    total: totalCapsules,
+                    unlocked: unlockedCapsules,
+                    locked: lockedCapsules,
+                    shared: sharedCapsules
+                }));
+    
+                // Show animation
+                const animationArea = document.getElementById('animation-area');
+                animationArea.style.display = 'flex';
+                
+                // Animation sequence
+                setTimeout(() => {
+                    document.getElementById('vinyl-animation').style.display = 'block';
+                    
+                    setTimeout(() => {
+                        document.getElementById('confirmation').style.display = 'block';
+                        
+                        setTimeout(() => {
+                            window.location.href = `userdashboard.html`;
+                        }, 2000);
+                    }, 1500);
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

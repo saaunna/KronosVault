@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Our Plans | KronosVault</title>
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            padding: 40px;
+            font-family: "Apple Chancery", "Monotype Corsiva", "Brush Script MT", cursive;
+            color: rgb(222, 213, 201);
+        }
+
+        #glowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .header {
+            text-align: center;
+            color: aquamarine;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 0;
+        }
+
+        .header h3 {
+            font-size: 24px;
+            margin-top: 5px;
+        }
+
+        .plan-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .plan-box {
+            background-color: rgba(30, 30, 30, 0.8);
+            border-radius: 20px;
+            width: 350px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .plan-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 255, 255, 0.5);
+        }
+
+        .plan-title {
+            font-size: 36px;
+            color: aquamarine;
+            margin-bottom: 25px;
+        }
+
+        .plan-features {
+            font-size: 22px;
+            line-height: 2;
+        }
+
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .plan-features li::before {
+            content: "✦ ";
+            color: aquamarine;
+        }
+
+        @media (max-width: 768px) {
+            .plan-box {
+                width: 90%;
+            }
+
+            .plan-title {
+                font-size: 28px;
+            }
+
+            .plan-features {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="glowCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("glowCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        let particles = [];
+        let mouse = { x: null, y: null };
+
+        function createParticle() {
+            if (mouse.x === null || mouse.y === null) return;
+            particles.push({
+                x: mouse.x,
+                y: mouse.y,
+                size: Math.random() * 6 + 3,
+                speedX: (Math.random() - 0.5) * 2,
+                speedY: (Math.random() - 0.5) * 2,
+                life: 1,
+                color: `hsla(200, 100%, 80%, 1)`
+            });
+
+            if (particles.length > 200) particles.shift();
+        }
+
+        window.addEventListener("mousemove", (event) => {
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+        });
+
+        setInterval(createParticle, 50);
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p, index) => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.life -= 0.02;
+
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = p.color;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (p.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            ctx.globalAlpha = 1;
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+
+    <div class="header">
+        <h1 style="font-size: 100px; font-family: Georgia, 'Times New Roman', Times, serif;">OUR PLANS</h1>
+        <h3>✧･ﾟ: *✧･ﾟ:* ✿ *:･ﾟ✧*:･ﾟ✧: ✧･ﾟ: *✧･ﾟ:* ✿ *:･ﾟ✧*:･ﾟ✧</h3>
+    </div>
+
+    <div class="plan-container">
+        <div class="plan-box">
+            <div class="plan-title">FREE PLAN</div>
+            <div class="plan-features">
+                <ul>
+                    <li>2 capsules/year</li>
+                    <li>Text & Images only</li>
+                    <li>Max lock: 1 year</li>
+                    <li>Basic Email Reminders</li>
+                </ul>
+            </div>
+        </div>
+        <div class="plan-box">
+            <div class="plan-title">SUPER PLAN</div>
+            <div class="plan-features">
+                <ul>
+                    <li>10 capsules/year</li>
+                    <li>Text, Images, Videos, Audio</li>
+                    <li>Max lock: 5 years</li>
+                    <li>Email + SMS Reminders</li>
+                </ul>
+            </div>
+        </div>
+        <div class="plan-box">
+            <div class="plan-title">PREMIUM PLAN</div>
+            <div class="plan-features">
+                <ul>
+                    <li>Unlimited capsules</li>
+                    <li>All media types</li>
+                    <li>Max lock: 10 years</li>
+                    <li>Email, SMS & Push Reminders</li>
+                    <li>Playlist with YouTube Music</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

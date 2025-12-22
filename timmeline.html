@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Timeline | Nostalgia Capsule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B5A2B;  /* Warm wood tone */
+            --secondary: #D2B48C;  /* Sand */
+            --paper: #FFF8E7;  /* Antique paper */
+            --text: #3E2723;  /* Dark brown */
+            --highlight: #A67C52;  /* Light wood */
+            --timeline: #6D4C41;  /* Coffee */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #F5F5F5;
+            color: var(--text);
+            font-family: 'Playfair Display', serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated nostalgic background */
+        .memory-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .memory-particle {
+            position: absolute;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
+            50% { opacity: 0.2; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .header {
+            background: rgba(139, 90, 43, 0.9);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid var(--secondary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-family: 'Dancing Script', cursive;
+            color: #FFF8E7;
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .timeline-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--paper);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            border: 1px solid var(--secondary);
+        }
+
+        .timeline-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .timeline-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+        }
+
+        input, textarea, select {
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(139, 90, 43, 0.2);
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        /* Timeline visualization */
+        .timeline-visualization {
+            height: 250px;
+            background: var(--paper);
+            border: 1px solid var(--secondary);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-line {
+            position: absolute;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--timeline), var(--highlight));
+            left: 100px;
+            z-index: 1;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 92px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--paper);
+            border: 3px solid var(--timeline);
+            z-index: 2;
+            transform: translateY(-8px);
+        }
+
+        .timeline-event {
+            position: absolute;
+            left: 130px;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 4px;
+            border-left: 3px solid var(--primary);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            max-width: 60%;
+            z-index: 3;
+        }
+
+        .timeline-event::before {
+            content: "";
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 10px solid var(--primary);
+        }
+
+        .preview-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text);
+            opacity: 0.6;
+            font-style: italic;
+            text-align: center;
+            width: 80%;
+        }
+
+        .submit-btn {
+            background: linear-gradient(to right, var(--primary), var(--highlight));
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background: linear-gradient(to right, #9C6F44, var(--primary));
+        }
+
+        /* Animation Area */
+        .animation-area {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(62, 39, 35, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .timeline-animation {
+            width: 300px;
+            height: 200px;
+            background: var(--paper);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary);
+            text-align: center;
+            padding: 1rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--secondary);
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+        }
+
+        .timeline-animation::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            opacity: 0.3;
+        }
+
+        .capsule-animation {
+            width: 120px;
+            height: 180px;
+            background: var(--paper);
+            border-radius: 60px 60px 10px 10px;
+            margin-top: 2rem;
+            position: relative;
+            border: 2px solid var(--primary);
+            display: none;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .capsule-lid {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 60px 60px 0 0;
+            border-bottom: 3px solid var(--highlight);
+        }
+
+        .locked-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--highlight);
+            font-size: 2rem;
+            display: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .confirmation {
+            color: var(--secondary);
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 1.3rem;
+            display: none;
+            font-family: 'Dancing Script', cursive;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+
+        .vintage-label {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Dancing Script', cursive;
+            color: var(--primary);
+            font-size: 1.2rem;
+            transform: rotate(5deg);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <div class="memory-background" id="memoryBackground"></div>
+
+    <div class="header">
+        <h1>Create Your Memory Timeline</h1>
+    </div>
+
+    <div class="timeline-container">
+        <div class="vintage-label">Precious Moments</div>
+        <form id="timelineForm" class="timeline-form">
+            <div class="form-group">
+                <label for="timeline-title">Timeline Title:</label>
+                <input type="text" id="timeline-title" placeholder="e.g., Our Family Journey" required>
+            </div>
+
+            <div class="form-group">
+                <label for="unlock-date">Unlock This Memory On:</label>
+                <input type="date" id="unlock-date" required>
+            </div>
+
+            <div class="form-group">
+                <label>Your Timeline Preview:</label>
+                <div class="timeline-visualization">
+                    <div class="timeline-line"></div>
+                    <div class="preview-placeholder">Your memories will appear along this timeline</div>
+                    <div id="timeline-events-preview"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="timeline-events">Cherished Moments (One per line):</label>
+                <textarea id="timeline-events" placeholder="Write each memory on a new line...&#10;&#10;Example:&#10;Our wedding day - June 2018&#10;First home together&#10;Baby's first birthday - March 2020" required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Preserve Your Timeline</button>
+        </form>
+    </div>
+
+    <!-- Animation Area -->
+    <div id="animation-area" class="animation-area">
+        <div id="timeline-animation" class="timeline-animation">
+            Storing your memories...
+        </div>
+        <div id="capsule-animation" class="capsule-animation">
+            <div class="capsule-lid"></div>
+            <div id="locked-icon" class="locked-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+        </div>
+        <div id="confirmation" class="confirmation">
+            <p>Your timeline is safely stored</p>
+            <p>Waiting for the right moment to be rediscovered...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create nostalgic background elements
+            const bgContainer = document.getElementById('memoryBackground');
+            const memoryIcons = ['✉', '📷', '📅', '❤', '⭐', '🎈', '🏠'];
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'memory-particle';
+                particle.textContent = memoryIcons[Math.floor(Math.random() * memoryIcons.length)];
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                bgContainer.appendChild(particle);
+            }
+
+            const form = document.getElementById('timelineForm');
+            const animationArea = document.getElementById('animation-area');
+            const timelineEvents = document.getElementById('timeline-events');
+            const previewContainer = document.getElementById('timeline-events-preview');
+            const placeholder = document.querySelector('.preview-placeholder');
+            
+            // Generate timeline preview
+            timelineEvents.addEventListener('input', function() {
+                const events = this.value.split('\n').filter(e => e.trim() !== '');
+                
+                if (events.length > 0) {
+                    placeholder.style.display = 'none';
+                    previewContainer.innerHTML = '';
+                    
+                    // Calculate spacing
+                    const spacing = 100 / (events.length + 1);
+                    
+                    events.forEach((event, index) => {
+                        // Create marker
+                        const marker = document.createElement('div');
+                        marker.className = 'timeline-marker';
+                        marker.style.top = ${spacing * (index + 1)}%;
+                        previewContainer.appendChild(marker);
+                        
+                        // Create event
+                        const eventElement = document.createElement('div');
+                        eventElement.className = 'timeline-event';
+                        eventElement.textContent = event;
+                        eventElement.style.top = ${spacing * (index + 1) - 5}%;
+                        
+                        // Alternate sides
+                        if (index % 2 === 0) {
+                            eventElement.style.left = '130px';
+                            eventElement.style.borderLeft = '3px solid var(--primary)';
+                            eventElement.style.borderRight = 'none';
+                            eventElement.style.borderRadius = '0 4px 4px 0';
+                            eventElement.style.textAlign = 'left';
+                            eventElement.querySelector('::before').style.display = 'block';
+                        } else {
+                            eventElement.style.left = 'auto';
+                            eventElement.style.right = '130px';
+                            eventElement.style.borderRight = '3px solid var(--primary)';
+                            eventElement.style.borderLeft = 'none';
+                            eventElement.style.borderRadius = '4px 0 0 4px';
+                            eventElement.style.textAlign = 'right';
+                        }
+                        
+                        previewContainer.appendChild(eventElement);
+                    });
+                } else {
+                    placeholder.style.display = 'block';
+                    previewContainer.innerHTML = '';
+                }
+            });
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const title = document.getElementById('timeline-title').value;
+                const date = document.getElementById('unlock-date').value;
+                const events = document.getElementById('timeline-events').value;
+                
+                // Validate
+                if (!title || !date || !events) {
+                    alert('Please fill all fields to preserve your memories');
+                    return;
+                }
+                
+                // Show animation
+                animationArea.style.display = 'flex';
+                document.getElementById('timeline-animation').textContent = "${title}";
+                
+                // Start animation sequence
+                setTimeout(() => {
+                    document.getElementById('capsule-animation').style.display = 'block';
+                    
+                    setTimeout(() => {
+                        document.getElementById('locked-icon').style.display = 'block';
+                        
+                        setTimeout(() => {
+                            document.getElementById('confirmation').style.display = 'block';
+                            
+                            // Save data
+                            saveTimelineCapsule(title, date, events);
+                            
+                            // Redirect after 3 seconds
+                            setTimeout(() => {
+                                window.location.href = 'userdashboard.html';
+                            }, 3000);
+                        }, 1500);
+                    }, 1500);
+                }, 2000);
+            });
+            
+            function saveTimelineCapsule(title, date, events) {
+                // 1. Prepare capsule data
+                const newCapsule = {
+                    id: Date.now(),
+                    type: 'timeline',
+                    title: title,
+                    date: date,
+                    created: new Date().toISOString(),
+                    status: 'locked'
+                };
+                
+                // 2. Save to capsules collection
+                let capsules = JSON.parse(localStorage.getItem('capsules')) || [];
+                capsules.unshift(newCapsule);
+                localStorage.setItem('capsules', JSON.stringify(capsules));
+                
+                // 3. Save events content separately
+                localStorage.setItem(capsule_${newCapsule.id}_events, events);
+                
+                // 4. Update stats
+                let stats = JSON.parse(localStorage.getItem('stat-number')) || {
+                    Capsules: 0,
+                    Locked: 0,
+                    Unlocked: 0
+                };
+                
+                stats.Capsules++;
+                stats.Locked++;
+                localStorage.setItem('stats', JSON.stringify(stats));
+            }
+
+            // Set minimum date to tomorrow
+            const dateInput = document.getElementById('unlock-date');
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.min = tomorrow.toISOString().split('T')[0];
+        });
+    </script>
+<script>
+    document.getElementById('timelineForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Get values from form
+        const title = document.getElementById('timeline-title').value;
+        const unlockDate = document.getElementById('unlock-date').value;
+        const eventsText = document.getElementById('timeline-events').value;
+
+        // Convert event text to an array
+        const eventsArray = eventsText.split('\n').filter(event => event.trim() !== '');
+
+        // Store data in localStorage
+        const timelineData = {
+            title: title,
+            unlockDate: unlockDate,
+            events: eventsArray
+        };
+
+        localStorage.setItem('timelineData', JSON.stringify(timelineData));
+
+        // Redirect to the new page
+        window.location.href = 'KRONOSVAULT TIMELINE.html';
+    });
+</script>
+</body>
+</html>

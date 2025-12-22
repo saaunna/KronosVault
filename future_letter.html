@@ -1,0 +1,162 @@
+<html>
+<head>
+    <title>KronosVault - Write to Future Self</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 0;
+            background: url('c:/Users/sahan/Downloads/background.jpg') no-repeat center center fixed;;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .prompt-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .prompt-text {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 300px;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .letter-container {
+            flex: 2;
+            background: rgb(66, 65, 65);
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="prompt-box">
+            <div id="prompt-box" class="prompt-text"></div>
+        </div>
+        
+        <div class="letter-container">
+            <h2>Write a Letter to Your Future Self</h2>
+            <p>Write your thoughts, goals, and reflections. Your future self will read this when the time comes.</p>
+            <textarea placeholder="Dear Future Me..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        const prompts = [
+            "What is the biggest lesson you've learned this year?",
+            "How do you define success right now? Has it changed over time?",
+            "What advice would you give your future self?",
+            "What are you struggling with the most right now?",
+            "What’s one thing you’re proud of yourself for today?",
+            "How do you hope to grow as a person in the next year?",
+            "What is something you wish you did more often?",
+            "What’s your biggest fear at this moment?",
+            "What’s a bad habit you want to break?",
+            "What’s a good habit you want to build?",
+            "Where do you see yourself five years from now?",
+            "What is one goal you are determined to achieve?",
+            "If money wasn’t a concern, what would you be doing with your life?",
+            "What is your dream job, and why?",
+            "What’s one skill you want to master in the future?",
+            "What is a personal project you’ve been wanting to start?",
+            "If you could work with anyone in the world, who would it be?",
+            "What would you say to yourself if you ever feel like giving up?",
+            "What’s a passion you have that you hope never fades?",
+            "Describe the 'future you' you hope to become.",
+            "Who is the most important person in your life right now?",
+            "What’s a conversation you recently had that changed your perspective?",
+            "Who do you hope to still be close to in the future?",
+            "Write a letter to someone who has impacted your life.",
+            "What would you say to someone who drifted away from you?",
+            "Who has been your biggest supporter recently?",
+            "If you could reconnect with one person from your past, who would it be?",
+            "What’s the best piece of advice someone gave you?",
+            "What do you want to remind your future self about love and friendships?",
+            "What’s something you hope to tell a loved one but haven’t yet?",
+            "How would you describe your emotional state today?",
+            "What are the little things that bring you joy right now?",
+            "If your emotions could be summed up in a song, what would it be?",
+            "What’s one thing that gives you hope even on bad days?",
+            "What do you do when you feel overwhelmed?",
+            "What’s something you’re holding onto that you should let go of?",
+            "What’s a simple act of self-care that makes a big difference for you?",
+            "What’s one comforting memory you’d like to revisit in the future?",
+            "How do you want your future self to handle stress better?",
+            "What makes you feel most at peace?",
+            "What is your happiest memory from the past year?",
+            "What’s a childhood memory that still makes you smile?",
+            "If you could relive one day, which would it be?",
+            "What was the last thing that made you laugh uncontrollably?",
+            "What’s something you’ve learned from your past mistakes?",
+            "If you could talk to your past self from five years ago, what would you say?",
+            "What’s a moment you wish you could freeze in time?",
+            "What is something you once thought was a big deal but now seems small?",
+            "What’s one thing you never want to forget about this phase of your life?",
+            "What is your most cherished possession, and why?",
+            "What’s the biggest change you’ve gone through recently?",
+            "How do you feel about change right now?",
+            "What’s something you thought would never happen, but it did?",
+            "If you could go back in time, would you change anything?",
+            "What’s a risk you took that paid off?",
+            "How do you want to handle challenges in the future?",
+            "What’s something uncertain in your life that excites you?",
+            "How do you want to remind yourself to embrace uncertainty?",
+            "What would you say to yourself if things don’t go as planned?",
+            "What’s a fear that you’re slowly learning to overcome?",
+            "What’s one thing happening in the world right now that you feel strongly about?",
+            "If you had the power to change one thing in the world, what would it be?",
+            "What do you hope humanity will have achieved in the future?",
+            "What’s a cause you want to contribute to?",
+            "How do you want to make an impact in the world?",
+            "What’s a recent news story that affected you deeply?",
+            "If you could send one message to the future generation, what would it be?",
+            "How do you want to contribute to making the world a better place?",
+            "What’s one thing the world needs more of right now?",
+            "What’s something about human nature that fascinates you?",
+            "If your life was a book, what would this chapter be called?",
+            "If you could describe yourself with three words, what would they be?",
+            "What’s one thing you wish more people knew about you?",
+            "If your future self had a message for you, what do you think it would be?",
+            "What’s a random thought that has been on your mind a lot lately?",
+            "What’s a question you wish you had the answer to?",
+            "If you could be anywhere right now, where would it be?",
+            "If you had to create a motto for your life, what would it be?",
+            "What’s a small act of kindness you recently witnessed?"
+        ];
+
+        function changePrompt() {
+            const promptBox = document.getElementById("prompt-box");
+            const randomIndex = Math.floor(Math.random() * prompts.length);
+            promptBox.textContent = prompts[randomIndex];
+        }
+
+        setInterval(changePrompt, 10000);
+        window.onload = changePrompt;
+    </script>
+
+</body>
+</html>
